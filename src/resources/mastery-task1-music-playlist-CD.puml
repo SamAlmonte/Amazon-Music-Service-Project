@@ -1,1 +1,84 @@
 PARTICIPANTS: use this file for creating the class diagram in mastery task 01
+
+@startuml
+Playlist o-- AlbumTrack
+
+AddSongToPlaylistActivity o-- AlbumTrackDao
+
+AddSongToPlaylistActivity o-- PlaylistDao
+
+CreatePlaylistActivity o-- PlaylistDao
+
+GetPlaylistActivity o-- PlaylistDao
+
+GetPlaylistSongsActivity o-- PlaylistDao
+
+UpdatePlaylistActivity o-- PlaylistDao
+
+
+class AlbumTrack {
+- @DynamoDBHashKey asin: String
+- @DynamoDBRangeKey trackNumber: Integer
+- albumName: String
+- songTitle: String
+
+}
+
+class AddSongToPlaylistActivity {
+    + handleRequest(AddSongToPlaylistRequest, Context) : AddSongToPlaylistResult
+}
+
+class GetPlaylistSongsActivity {
+    + handleRequest(GetPlaylistSongsRequest, Context): GetPlaylistSongsResult
+}
+
+class CreatePlaylistActivity {
+    + handleRequest(CreatePlaylistRequest, Context): CreatePlaylistResult
+}
+
+class GetPlaylistActivity {
+    + handleRequest(GetPlaylistRequest, Context): GetPlaylistResult
+}
+
+class UpdatePlaylistActivity {
+    + handleRequest(UpdatePlaylistRequest, Context): UpdatePlaylistResult
+}
+
+class Playlist {
+    - @DynamoDBHashKey id: String
+    - name: String
+    - customerId: String
+    - songCount: Integer
+    - tags: Set<String>
+    -songList: List<AlbumTrack>
+
+}
+
+class AlbumTrackDao {
+    -dynamoDbMapper: DynamoDBMapper
+}
+
+class PlaylistDao {
+ + getPlaylist(String): Playlist
+ -dynamoDbMapper: DynamoDBMapper
+
+}
+
+class AlbumTrackNotFoundException {
+
+}
+
+class PlaylistNotFoundException  {
+}
+
+class InvalidAttributeValueException {
+
+}
+
+
+
+
+
+
+
+@enduml
