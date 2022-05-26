@@ -45,7 +45,7 @@ public class GetPlaylistActivity implements RequestHandler<GetPlaylistRequest, G
     public GetPlaylistResult handleRequest(final GetPlaylistRequest getPlaylistRequest, Context context) {
         log.info("Received GetPlaylistRequest {}", getPlaylistRequest);
         String requestedId = getPlaylistRequest.getId();
-        if ( requestedId == null)
+        if(playlistDao.getPlaylist(getPlaylistRequest.getId()) == null)
             throw new PlaylistNotFoundException();
 
         Playlist playlist = playlistDao.getPlaylist(requestedId);

@@ -64,8 +64,8 @@ public class CreatePlaylistActivity implements RequestHandler<CreatePlaylistRequ
         Playlist aPlaylist = new Playlist();
         aPlaylist.setCustomerId(createPlaylistRequest.getCustomerId());
         aPlaylist.setId(MusicPlaylistServiceUtils.generatePlaylistId());
-        Set<String> aTagList= new HashSet<>(createPlaylistRequest.getTags());
-        aPlaylist.setTags(aTagList);
+        Set<String> aTagList= new HashSet<>(createPlaylistRequest.getTags()); //remove duplicates
+        aPlaylist.setTags(new ArrayList<>(aTagList));
         aPlaylist.setName(createPlaylistRequest.getName());
         aPlaylist.setSongList(new ArrayList<AlbumTrack>());
         aPlaylist.setSongCount(aPlaylist.getSongList().size());

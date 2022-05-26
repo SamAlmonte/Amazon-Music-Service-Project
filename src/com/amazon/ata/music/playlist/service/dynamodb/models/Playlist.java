@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import java.util.Set;
 public class Playlist {
     @DynamoDBHashKey(attributeName ="id")
     private String id;
-    //@DynamoDBAttribute(attributeName = "songList")
+    @DynamoDBAttribute(attributeName = "songList")
     //songLsit should probably correlate to an item in the album_track table
     private List<AlbumTrack> songList;
     @DynamoDBAttribute(attributeName = "name")
@@ -27,7 +28,8 @@ public class Playlist {
     private String customerId;
     @DynamoDBAttribute(attributeName = "songCount")
     private Integer songCount;
-    private Set<String> tags;
+
+    private List<String> tags;
     @DynamoDBAttribute(attributeName = "name")
     public String getName(){
         return name;
@@ -43,9 +45,9 @@ public class Playlist {
     @DynamoDBAttribute(attributeName = "tags")
     public List<String> getTags(){
         if(tags == null)
-            return new ArrayList<String>();
+            return new ArrayList<>();
         else
-            return new ArrayList<>(tags);
+            return tags;
         //List<String> newList = new ArrayList<>(tags);
         //newList.addAll(tags);
     }
@@ -62,7 +64,7 @@ public class Playlist {
         this.songCount = songCount;
     }
 
-    public void setTags(Set<String> tags){
+    public void setTags(List<String> tags){
         this.tags = tags;
     }
 
@@ -82,7 +84,10 @@ public class Playlist {
     @DynamoDBTypeConverted(converter = AlbumTrackLinkedListConverter.class)
     @DynamoDBAttribute(attributeName = "songList")
     public List<AlbumTrack> getSongList() {
-        return songList;
+        if(songList == null)
+            return new ArrayList<>();
+        else
+            return songList;
     }
 
     public void setSongList(List<AlbumTrack> songList) {

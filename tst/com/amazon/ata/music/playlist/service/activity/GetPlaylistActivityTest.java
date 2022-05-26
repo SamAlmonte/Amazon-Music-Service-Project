@@ -42,8 +42,8 @@ public class GetPlaylistActivityTest {
         playlist.setName(expectedName);
         playlist.setCustomerId(expectedCustomerId);
         playlist.setSongCount(expectedSongCount);
-        playlist.setTags(Sets.newHashSet(expectedTags));
-
+        //playlist.setTags(Sets.newHashSet(expectedTags));
+        playlist.setTags(expectedTags);
         when(playlistDao.getPlaylist(expectedId)).thenReturn(playlist);
 
         GetPlaylistRequest request = GetPlaylistRequest.builder()

@@ -1,5 +1,8 @@
 package com.amazon.ata.music.playlist.service.activity;
 
+import com.amazon.ata.music.playlist.service.dynamodb.models.AlbumTrack;
+import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
+import com.amazon.ata.music.playlist.service.models.SongOrder;
 import com.amazon.ata.music.playlist.service.models.requests.GetPlaylistSongsRequest;
 import com.amazon.ata.music.playlist.service.models.results.GetPlaylistSongsResult;
 import com.amazon.ata.music.playlist.service.models.SongModel;
@@ -10,7 +13,9 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Implementation of the GetPlaylistSongsActivity for the MusicPlaylistService's GetPlaylistSongs API.
@@ -43,9 +48,33 @@ public class GetPlaylistSongsActivity implements RequestHandler<GetPlaylistSongs
     @Override
     public GetPlaylistSongsResult handleRequest(final GetPlaylistSongsRequest getPlaylistSongsRequest, Context context) {
         log.info("Received GetPlaylistSongsRequest {}", getPlaylistSongsRequest);
+        //getPlaylistSongsRequest.getOrder().equals(SongOrder.SHUFFLED)
+        Playlist playlist = playlistDao.getPlaylist(getPlaylistSongsRequest.getId());
+        SongOrder songOrder = getPlaylistSongsRequest.getOrder();
+        if(songOrder != null){
+            if(songOrder.equals(SongOrder.DEFAULT)) {
+                //donothingHere
+            }
+            else if (songOrder.equals(SongOrder.REVERSED)){
+                List<AlbumTrack> songs = playlist.getSongList();
+                Collections.reverse(songs);
+                playlist.setSongList(songs);
+            } else if (songOrder.equals(SongOrder.SHUFFLED)) {
+                List<AlbumTrack> songs = playlist.getSongList();
+                Collections.shuffle(songs);
+                playlist.setSongList(songs);
+            }
+            else {
+                throw new IllegalArgumentException("The song order is invalid.");
+            }
+        }
+        List<SongModel> aList = new ArrayList<SongModel>();
+        for (int i =0; i < playlist.getSongList().size(); i++) {
+            aList.add(SongModel.builder().withTitle(playlist.getSongList().get(i).getSongTitle()).withAlbum(playlist.getSongList().get(i).getAlbumName()).withAsin(playlist.getSongList().get(i).getAsin()).withTrackNumber(playlist.getSongList().get(i).getTrackNumber()).build());
+        }
 
         return GetPlaylistSongsResult.builder()
-                .withSongList(Collections.singletonList(new SongModel()))
+                .withSongList(aList)
                 .build();
     }
 }

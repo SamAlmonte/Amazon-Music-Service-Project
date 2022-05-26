@@ -18,4 +18,37 @@ public class AlbumTrack {
     private String albumName;
     @DynamoDBAttribute(attributeName = "song_title")
     private String songTitle;
+
+    public void setAsin(String asin) {
+        this.asin = asin;
+    }
+
+    public void setTrackNumber(Integer trackNumber){
+        this.trackNumber = trackNumber;
+    }
+
+    public void setSongTitle(String songTitle){
+        this.songTitle = songTitle;
+    }
+
+    public void setAlbumName(String albumName){
+        this.albumName = albumName;
+    }
+
+
+    public String getAsin(){
+        return asin;
+    }
+
+    public Integer getTrackNumber(){
+        return trackNumber;
+    }
+
+    public String getAlbumName(){
+        return albumName;
+    }
+
+    public String getSongTitle() {
+        return songTitle;
+    }
 }

@@ -37,11 +37,11 @@ public class PlaylistDao {
         return playlist;
     }
 
-    public void savePlaylist(Playlist playlist){
+    public Playlist savePlaylist(Playlist playlist){
         if(playlist == null)
             throw new PlaylistNotFoundException("The given playlist argument was NULL");
         dynamoDbMapper.save(playlist);
-
+        return playlist;
 
     }
 

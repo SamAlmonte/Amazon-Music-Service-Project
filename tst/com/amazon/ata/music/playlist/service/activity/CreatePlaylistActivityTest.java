@@ -55,7 +55,8 @@ public class CreatePlaylistActivityTest {
         playlist.setName(expectedName);
         playlist.setCustomerId(expectedCustomerId);
         playlist.setSongCount(expectedSongCount);
-        playlist.setTags(Sets.newHashSet(expectedTags));
+        //playlist.setTags(Sets.newHashSet(expectedTags));
+        playlist.setTags(Lists.newArrayList(expectedTags));
 
         CreatePlaylistRequest createPlaylistRequest = CreatePlaylistRequest.builder().withCustomerId(expectedCustomerId).withName(expectedName).withTags(expectedTags).build();
 

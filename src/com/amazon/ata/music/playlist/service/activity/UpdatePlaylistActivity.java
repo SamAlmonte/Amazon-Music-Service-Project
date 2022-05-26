@@ -1,10 +1,16 @@
 package com.amazon.ata.music.playlist.service.activity;
 
+import com.amazon.ata.music.playlist.service.converters.ModelConverter;
+import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
+import com.amazon.ata.music.playlist.service.exceptions.InvalidAttributeChangeException;
+import com.amazon.ata.music.playlist.service.exceptions.InvalidAttributeValueException;
+import com.amazon.ata.music.playlist.service.exceptions.PlaylistNotFoundException;
 import com.amazon.ata.music.playlist.service.models.PlaylistModel;
 import com.amazon.ata.music.playlist.service.models.requests.UpdatePlaylistRequest;
 import com.amazon.ata.music.playlist.service.models.results.UpdatePlaylistResult;
 import com.amazon.ata.music.playlist.service.dynamodb.PlaylistDao;
 
+import com.amazon.ata.music.playlist.service.util.MusicPlaylistServiceUtils;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.logging.log4j.LogManager;
@@ -50,8 +56,25 @@ public class UpdatePlaylistActivity implements RequestHandler<UpdatePlaylistRequ
     public UpdatePlaylistResult handleRequest(final UpdatePlaylistRequest updatePlaylistRequest, Context context) {
         log.info("Received UpdatePlaylistRequest {}", updatePlaylistRequest);
 
-        return UpdatePlaylistResult.builder()
-                .withPlaylist(new PlaylistModel())
-                .build();
+        if(!MusicPlaylistServiceUtils.isValidString(updatePlaylistRequest.getCustomerId()) || !MusicPlaylistServiceUtils.isValidString(updatePlaylistRequest.getName()))
+            throw new InvalidAttributeValueException();
+
+        if(playlistDao.getPlaylist(updatePlaylistRequest.getId()) == null)
+            throw new PlaylistNotFoundException();
+        Playlist playlist = playlistDao.getPlaylist(updatePlaylistRequest.getId());
+
+        if(!updatePlaylistRequest.getCustomerId().equals(playlist.getCustomerId()))
+            throw new InvalidAttributeChangeException(); //make this
+
+        String newName = updatePlaylistRequest.getName();
+
+        playlist.setName(newName);
+        playlist.setId(updatePlaylistRequest.getId());
+        playlistDao.savePlaylist(playlist);
+       PlaylistModel playlistModel = new ModelConverter().toPlaylistModel(playlist);
+       UpdatePlaylistResult updatePlaylistResult = UpdatePlaylistResult.builder().build();
+       updatePlaylistResult.setPlaylist(playlistModel);
+
+        return updatePlaylistResult;
     }
 }

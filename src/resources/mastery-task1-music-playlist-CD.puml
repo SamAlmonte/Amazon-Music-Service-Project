@@ -15,6 +15,9 @@ GetPlaylistSongsActivity o-- PlaylistDao
 
 UpdatePlaylistActivity o-- PlaylistDao
 
+class InvalidAttribute {
+
+}
 
 class AlbumTrack {
 - @DynamoDBHashKey asin: String
@@ -69,13 +72,21 @@ class AlbumTrackNotFoundException {
 }
 
 class PlaylistNotFoundException  {
+
 }
 
 class InvalidAttributeValueException {
 
 }
 
+class InvalidAttributeChangeException {
 
+}
+
+
+InvalidAttribute -|>  InvalidAttributeValueException
+
+InvalidAttribute -|>  InvalidAttributeChangeException
 
 
 

@@ -2,7 +2,7 @@ package com.amazon.ata.music.playlist.service.models.requests;
 
 import java.util.Objects;
 
-public class AddSongToPlaylistRequest {
+public class    AddSongToPlaylistRequest {
     private String id;
     private String asin;
     private int trackNumber;
